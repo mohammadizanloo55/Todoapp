@@ -5,6 +5,7 @@ class Work_list extends PureComponent {
     inputvalue: "",
     isinvalid: false,
   };
+  
   checksetornot() {
     let { Todos, number } = this.props;
 
@@ -54,6 +55,7 @@ class Work_list extends PureComponent {
 
     let filtered = Todos.filter(function (el) {
       if (el.isdeleted) {
+        el.isremove = false
         return false;
       }
       return true;

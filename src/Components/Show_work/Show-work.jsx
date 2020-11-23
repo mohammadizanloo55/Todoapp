@@ -1,6 +1,7 @@
 import { PureComponent } from "react";
 import Work_list from "./work-list/Work_list";
 import Done_list from "./Done-list/Done-list";
+import Done_or_Work from "./Done_or_Work/Done_or_Work"
 class Show_work extends PureComponent {
   state = {
     active: true,
@@ -11,16 +12,16 @@ class Show_work extends PureComponent {
       this.setState({
         active: false,
       });
-      console.log("1");
+      
     } else {
       this.setState({
         active: true,
       });
-      console.log("2");
+      
     }
   };
   render() {
-    const { active, isdeleted } = this.state;
+    const { active } = this.state;
     const { Todos, sendthis, Dones } = this.props;
 
     return (
@@ -49,6 +50,9 @@ class Show_work extends PureComponent {
                   href="#"
                 >
                   done
+                  <span className="badge ml-2 badge-success">
+                    {Dones.length}
+                  </span>
                 </b>
               </li>
             </ul>
@@ -56,24 +60,27 @@ class Show_work extends PureComponent {
 
           {active
             ? Todos.map((item, index) => {
-                console.log(active);
+                
                 return (
-                  <Work_list
+                  <Done_or_Work
                     sendthis={sendthis}
                     key={index}
                     number={index}
                     Todos={Todos}
+                    Dones={sendthis().state.Dones}
+                    Todos_or_Dones={active}
                   />
                 );
               })
             : Dones.map((item, index) => {
               
-             return <Done_list
+             return <Done_or_Work
                   sendthis={sendthis}
                   key={index}
                   number={index}
                   Todos={Todos}
                   Dones={sendthis().state.Dones}
+                  Todos_or_Dones={active}
                 />;
               })}
         </div>

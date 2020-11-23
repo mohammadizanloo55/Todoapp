@@ -5,14 +5,20 @@ class Done_list extends PureComponent {
     inputvalue: "",
     isinvalid: false,
   };
+  isTodofunc = () => {
+    if (this.props.Todos_or_Dones) {
+      return ["Todos", this.props.Todos, "isdeleted"];
+    }
+    return ["Dones", this.props.Dones, "isremove"];
+  };
   checksetornot() {
-    let { Dones, number } = this.props;
-    
-    if (Dones[number] === null || Dones[number] === undefined) {
+    let { number } = this.props;
+    let [, props] = this.isTodofunc();
+    if (props[number] === null || props[number] === undefined) {
       return "";
     }
 
-    return Dones[number].text;
+    return props[number].text;
   }
   edit = () => {
     this.setState({
@@ -26,11 +32,13 @@ class Done_list extends PureComponent {
     });
   };
   aplly = () => {
-    let { Dones, number } = this.props;
+    let { number } = this.props;
+
     let { inputvalue } = this.state;
+    let [, props] = this.isTodofunc();
 
     if (inputvalue.trim() !== "") {
-      Dones[number].text = inputvalue;
+      props[number].text = inputvalue;
       this.setState({
         isshow: false,
         isinvalid: false,
@@ -47,43 +55,63 @@ class Done_list extends PureComponent {
       inputvalue: e.target.value,
     });
   };
-  delete = (isdone = false) => {
-    let { Dones, number, sendthis } = this.props;
+  delete = () => {
+    let { Todos, number, Dones, sendthis } = this.props;
+    let [Todos_or_Dones, prop, isdeleted_or_isremove] = this.isTodofunc();
+    let removeo_and_fixeddata = (true_or_false) => {
+      if (this.props.Todos_or_Dones) {
+        Todos[number].isdeleted = true_or_false;
+      } else {
+        Dones[number].isremove = true_or_false;
+      }
+    };
 
-    Dones[number].isremove = true;
-
-    let filtered = Dones.filter(function (el) {
-      if (el.isremove) {
-        
-        el.isdeleted = false
-         return false;
-        
+    removeo_and_fixeddata(true);
+    let filtered = prop.filter(function (el) {
+      if (el[isdeleted_or_isremove]) {
+        removeo_and_fixeddata(false);
+        return false;
       }
       return true;
     });
-    
+
     sendthis().setState({
-      Dones: filtered,
+      [Todos_or_Dones]: filtered,
     });
-    
+    console.log(Todos_or_Dones);
+    this.forceUpdate();
   };
 
   done = () => {
-    let { Dones, number, sendthis } = this.props;
-    let prev = sendthis().state.Todos;
-    let test = Dones[number];
-    
+    let upsidedown;
+    if (this.props.Todos_or_Dones) {
+      upsidedown = ["Dones", this.props.Dones];
+    } else {
+      upsidedown = ["Todos", this.props.Todos];
+    }
+
+    let { number, sendthis } = this.props;
+    let prev = upsidedown[1];
+    let [, prop] = this.isTodofunc();
+
+    let test = prop[number];
+
     sendthis().setState({
-      Todos: [...[test], ...prev],
+      [upsidedown[0]]: [...[test], ...prev],
     });
-    
-    this.delete(true) 
-   
+
+    this.delete();
   };
   render() {
     let { isshow, isinvalid } = this.state;
-    let { Dones, number } = this.props;
-    if(Dones[number].isremove ===true ) return null
+    let { number ,Todos_or_Dones} = this.props;
+    let [, prop,isdeleted_or_isremove] = this.isTodofunc();
+    
+
+    if (prop[number][isdeleted_or_isremove]) {
+      return null;
+    }
+
     return (
       <>
         <div className="col-12    px-1  py-3 border-black border bg-light ">
@@ -108,9 +136,9 @@ class Done_list extends PureComponent {
                 <div className="col px-0">
                   <button
                     onClick={this.done}
-                    className="btn btn-warning btn-sm mr-1"
+                    className={`btn ${Todos_or_Dones? "btn-success" : "btn-warning"} btn-sm mr-1`}
                   >
-                    undone
+                    {Todos_or_Dones? "done" : "undone"}
                   </button>
                   <button
                     onClick={this.edit}
