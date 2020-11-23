@@ -1,0 +1,9 @@
+.nav-item {
+  cursor: pointer;
+}
+
+::selection {
+  cursor: pointer;
+  background-color: white;
+  color:  none;
+}

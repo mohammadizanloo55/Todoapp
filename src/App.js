@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.scss";
+import Header from "./Components/Header/Header";
+import Helper from "./Components/Helper/Helper";
+import Show_work from "./Components/Show_work/Show-work";
+import { PureComponent } from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends PureComponent {
+  state = {
+    Todos: [],
+    Dones: [],
+  };
+  sendthis = (inputvalue) => {
+    if (inputvalue === undefined) {
+      return this;
+    }
+    const Todos = this.state.Todos;
+
+    this.setState({
+      Todos: Todos.concat(inputvalue),
+    });
+  };
+
+  render() {
+    const { Todos , Dones } = this.state;
+    return (
+      <div>
+        <Header />
+        <Helper sendthis={this.sendthis} />
+        <Show_work Todos={Todos} Dones={Dones} sendthis={this.sendthis} />
+      </div>
+    );
+  }
 }
 
 export default App;
