@@ -14,30 +14,58 @@ function Signup() {
   let [state, setState] = useState({
     Email_inputvalue: "",
     Password_inputvalue: "",
+    Email_Isinvalid: false,
+    Password_Isinvalid: false,
     Iserr: false,
+    Emailischanged: false,
+    Passwordchanged: false,
     errtext: "",
   });
+
   let loginContext = useContext(LoginContext);
+  let EmailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  let GreatpasswordRegex = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
 
   let Email_change = (e) => {
-    setState({
-      ...state,
-      Iserr: false,
-      Email_inputvalue: e.target.value,
-    });
+    if (EmailRegex.test(e.target.value)) {
+      setState({
+        ...state,
+        Email_Isinvalid: false,
+        Email_inputvalue: e.target.value,
+        Emailischanged: true,
+        Iserr:false
+      });
+    } else {
+      setState({
+        ...state,
+        Email_Isinvalid: true,
+        Email_inputvalue: e.target.value,
+        Emailischanged: true,
+        Iserr:false
+      });
+    }
   };
   let Password_change = (e) => {
-    setState({
-      ...state,
-      Iserr: false,
-      Password_inputvalue: e.target.value,
-    });
+    if (GreatpasswordRegex.test(e.target.value)) {
+      setState({
+        ...state,
+        Iserr: false,
+        Password_Isinvalid: false,
+        Password_inputvalue: e.target.value,
+        Passwordchanged: true,
+      });
+    } else {
+      setState({
+        ...state,
+        Iserr: false,
+        Password_Isinvalid: true,
+        Password_inputvalue: e.target.value,
+        Passwordchanged: true,
+      });
+    }
   };
   let Form_submited = (e) => {
     e.preventDefault();
-
-    let EmailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let GreatpasswordRegex = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
 
     if (!EmailRegex.test(Email_inputvalue)) {
       setState({
@@ -115,7 +143,16 @@ function Signup() {
       });
   };
 
-  let { Email_inputvalue, Password_inputvalue, Iserr, errtext } = state;
+  let {
+    Email_inputvalue,
+    Password_inputvalue,
+    Iserr,
+    errtext,
+    Email_Isinvalid,
+    Password_Isinvalid,
+    Passwordchanged,
+    Emailischanged,
+  } = state;
 
   return (
     <div className="row mx-0 d-flex justify-content-center align-items-center min-vh-100">
@@ -131,9 +168,11 @@ function Signup() {
               <input
                 type="email"
                 className={`form-control ${
-                  errtext === "your Email was wrong" || errtext === ""
-                    ? "is-invalid"
-                    : "is-valid"
+                  Emailischanged
+                    ? Email_Isinvalid
+                      ? "is-invalid"
+                      : "is-valid"
+                    : ""
                 }`}
                 id="inputEmail"
                 placeholder="Enter email"
@@ -148,10 +187,13 @@ function Signup() {
               <label htmlFor="inputPassword"> Password </label>
               <input
                 type="Password"
-                className={`form-control ${
-                  errtext === "your password is not safe" || errtext === ""
-                    ? "is-invalid"
-                    : "is-valid"
+                className={`form-control 
+                ${
+                  Passwordchanged
+                    ? Password_Isinvalid
+                      ? "is-invalid"
+                      : "is-valid"
+                    : ""
                 }`}
                 id="inputPassword"
                 placeholder="Enter Password"
@@ -164,7 +206,10 @@ function Signup() {
             </div>
           </div>
           <div className="card-footer row mx-0 ">
-            <button className="btn-block card-link btn btn-success" type="submit">
+            <button
+              className="btn-block card-link btn btn-success"
+              type="submit"
+            >
               Signup
             </button>
             <Link
