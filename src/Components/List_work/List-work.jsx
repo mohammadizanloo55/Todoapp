@@ -24,8 +24,8 @@ function List_work(param) {
         undones,
       }}
     >
-      <div className="mt-4 px-0 container d-flex justify-content-center ">
-        <div className="row px-1 d-flex col-12 col-md-7  ">
+      <div className="mt-4 px-0  px-sm-4  container d-flex justify-content-center ">
+        <div className="row px-0 d-flex col-12 col-md-7  ">
           <div className="col-12 d-flex px-0  ">
             <TOOGLE_VIEW_LIST />
           </div>

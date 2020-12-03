@@ -155,7 +155,7 @@ function Signup() {
   } = state;
 
   return (
-    <div className="row mx-0 d-flex justify-content-center align-items-center min-vh-100">
+    <div className="bg-Todo row mx-0 d-flex justify-content-center align-items-center min-vh-100">
       {Iserr ? <Alerter text={errtext} /> : null}
       <div className="card col-12 px-0 col-sm-10 col-md-6 col-lg-5 col-xl-4">
         <div className="card-header">
