@@ -164,7 +164,7 @@ function Signup() {
             </div>
           </div>
           <div className="card-footer row mx-0 ">
-            <button className="btn-block card-link btn btn-success">
+            <button className="btn-block card-link btn btn-success" type="submit">
               Signup
             </button>
             <Link
