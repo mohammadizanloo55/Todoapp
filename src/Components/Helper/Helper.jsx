@@ -1,5 +1,6 @@
 //? librarys
 import axios from "axios";
+import loadable from "@loadable/component";
 //? hooks
 import { useState, useContext } from "react";
 //? Context
@@ -8,8 +9,10 @@ import TodoContext from "../../Contexts/TodoContext/TodoContext";
 import LoginContext from "./../../Contexts/LoginContext/LoginContext";
 
 //? Component
-import Alerter from "../Alerter/Alerter";
 
+const Alerter = loadable(() => {
+  return import("../Alerter/Alerter");
+});
 function Helper() {
   const Todocontext = useContext(TodoContext);
   // const logincontext = useContext(LoginContext);

@@ -1,13 +1,19 @@
 //? library
 import { Link } from "react-router-dom";
-import axios from "axios";
+import axios from "./../../AxiosConfig/AxiosConfig";
 import sha256 from "crypto-js/sha256";
+import loadable from "@loadable/component";
 //? hooks
 import { useState, useContext } from "react";
-//? Components
-import Alerter from "../Alerter/Alerter";
+
 //?Contexts
 import LoginContext from "../../Contexts/LoginContext/LoginContext";
+
+//? Components
+const Alerter = loadable(() => {
+  return import("../Alerter/Alerter");
+});
+
 function Login() {
   let [state, setState] = useState({
     Email_inputvalue: "",

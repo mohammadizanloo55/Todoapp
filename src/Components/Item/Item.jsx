@@ -1,5 +1,5 @@
 //? library
-import axios from "axios";
+import axios from "./../../AxiosConfig/AxiosConfig";
 //? hooks
 import { useContext, useState } from "react";
 //? Context

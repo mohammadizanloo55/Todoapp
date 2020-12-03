@@ -1,9 +1,14 @@
 import { useContext, useState } from "react";
-import ITEM from "./../Item/Item";
-// import Confirm from "./Components/Confirm/Confirm";
+import loadable from "@loadable/component";
+
 import List_work_Context from "../../Contexts/List_work_Context/List_work_Context";
 import TOOGLE_VIEW_LIST from "./toogle_view_list/Toogle_view_list";
 import TodoContext from "../../Contexts/TodoContext/TodoContext";
+
+const ITEM = loadable(() => {
+  return import("./../Item/Item");
+});
+
 function List_work(param) {
   let [state, setState] = useState({
     Show_undone: true,

@@ -1,15 +1,19 @@
 //? library
 import { Link, Redirect } from "react-router-dom";
-import axios from "axios";
+import axios from "./../../AxiosConfig/AxiosConfig";
 import sha256 from "crypto-js/sha256";
+import loadable from "@loadable/component";
 
 //? hooks
 import { useState, useContext } from "react";
-//? Components
-import Alerter from "../Alerter/Alerter";
+
 //?Contexts
 import LoginContext from "../../Contexts/LoginContext/LoginContext";
 
+//? Components
+const Alerter = loadable(() => {
+  return import("../Alerter/Alerter");
+});
 function Signup() {
   let [state, setState] = useState({
     Email_inputvalue: "",
@@ -33,7 +37,7 @@ function Signup() {
         Email_Isinvalid: false,
         Email_inputvalue: e.target.value,
         Emailischanged: true,
-        Iserr:false
+        Iserr: false,
       });
     } else {
       setState({
@@ -41,7 +45,7 @@ function Signup() {
         Email_Isinvalid: true,
         Email_inputvalue: e.target.value,
         Emailischanged: true,
-        Iserr:false
+        Iserr: false,
       });
     }
   };
