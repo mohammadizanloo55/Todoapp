@@ -1,13 +1,10 @@
 //? librarys
-import axios from "axios";
+import axios from "./../../AxiosConfig/AxiosConfig";
 import loadable from "@loadable/component";
 //? hooks
 import { useState, useContext } from "react";
 //? Context
 import TodoContext from "../../Contexts/TodoContext/TodoContext";
-
-import LoginContext from "./../../Contexts/LoginContext/LoginContext";
-
 //? Component
 
 const Alerter = loadable(() => {
@@ -43,14 +40,11 @@ function Helper() {
       let { email, Password, firebasehash } = Todocontext;
 
       axios
-        .put(
-          `https://todoapp-3d9bf.firebaseio.com/users/${email}/${firebasehash}.json`,
-          {
-            gmail: email,
-            password: Password,
-            Todos: newTodos,
-          }
-        )
+        .put(`/users/${email}/${firebasehash}.json`, {
+          gmail: email,
+          password: Password,
+          Todos: newTodos,
+        })
         .then((e) => {
           setstate({
             inputvalue: "",

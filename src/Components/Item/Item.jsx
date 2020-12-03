@@ -26,7 +26,7 @@ function Item(props) {
   let donetoogleClicked = () => {
     axios
       .put(
-        `https://todoapp-3d9bf.firebaseio.com/users/${email}/${firebasehash}/Todos/${itemindexofall}/.json`,
+        `/users/${email}/${firebasehash}/Todos/${itemindexofall}/.json`,
         {
           ...item,
           IsDone: !item.IsDone,
@@ -78,7 +78,7 @@ function Item(props) {
     }
     axios
       .put(
-        `https://todoapp-3d9bf.firebaseio.com/users/${email}/${firebasehash}/Todos/${itemindexofall}/.json`,
+        `/users/${email}/${firebasehash}/Todos/${itemindexofall}/.json`,
         {
           ...item,
           text: editedinputvalue,
@@ -118,7 +118,7 @@ function Item(props) {
     });
     axios
       .put(
-        `https://todoapp-3d9bf.firebaseio.com/users/${email}/${firebasehash}/Todos/.json`,
+        `/users/${email}/${firebasehash}/Todos/.json`,
         {
           ...todosfiltered,
         }

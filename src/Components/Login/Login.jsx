@@ -89,7 +89,7 @@ function Login() {
     let passwordhash = sha256(Password_inputvalue.trim()).toString().trim();
 
     axios
-      .get(`https://todoapp-3d9bf.firebaseio.com/users/${gmailhash}/.json`)
+      .get(`/users/${gmailhash}/.json`)
       .then((DB) => {
         if (DB.data[Object.keys(DB.data)].gmail === gmailhash) {
           if (DB.data[Object.keys(DB.data)].password === passwordhash) {

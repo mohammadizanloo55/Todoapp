@@ -90,12 +90,12 @@ function Signup() {
     let gmailhash = sha256(Email_inputvalue.trim()).toString().trim();
     let passwordhash = sha256(Password_inputvalue.trim()).toString().trim();
     axios
-      .get(`https://todoapp-3d9bf.firebaseio.com/users/${gmailhash}/.json`)
+      .get(`/users/${gmailhash}/.json`)
       .then((DB) => {
         if (DB.data === null) {
           axios
             .post(
-              `https://todoapp-3d9bf.firebaseio.com/users/${gmailhash}/.json`,
+              `/users/${gmailhash}/.json`,
               {
                 gmail: gmailhash,
                 password: passwordhash,
