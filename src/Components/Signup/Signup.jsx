@@ -14,12 +14,17 @@ import LoginContext from "../../Contexts/LoginContext/LoginContext";
 const Alerter = loadable(() => {
   return import("../Alerter/Alerter");
 });
+const Loader = loadable(() => {
+  return import("./../Loader/Loader");
+});
+
 function Signup() {
   let [state, setState] = useState({
     Email_inputvalue: "",
     Password_inputvalue: "",
     Email_Isinvalid: false,
     Password_Isinvalid: false,
+    Inloading: false,
     Iserr: false,
     Emailischanged: false,
     Passwordchanged: false,
@@ -87,21 +92,24 @@ function Signup() {
       });
       return null;
     }
+    
     let gmailhash = sha256(Email_inputvalue.trim()).toString().trim();
     let passwordhash = sha256(Password_inputvalue.trim()).toString().trim();
+   
     axios
       .get(`/users/${gmailhash}/.json`)
       .then((DB) => {
         if (DB.data === null) {
+          setState({
+            ...state,
+            Inloading: true,
+          });
           axios
-            .post(
-              `/users/${gmailhash}/.json`,
-              {
-                gmail: gmailhash,
-                password: passwordhash,
-                Todos: [],
-              }
-            )
+            .post(`/users/${gmailhash}/.json`, {
+              gmail: gmailhash,
+              password: passwordhash,
+              Todos: [],
+            })
             .then((e) => {
               setState({
                 ...state,
@@ -156,42 +164,46 @@ function Signup() {
     Password_Isinvalid,
     Passwordchanged,
     Emailischanged,
+    Inloading,
   } = state;
-
+  if (Inloading) {
+    return <Loader />;
+  }
   return (
-    <div className="bg-Todo row mx-0 d-flex justify-content-center align-items-center min-vh-100">
-      {Iserr ? <Alerter text={errtext} /> : null}
-      <div className="card col-12 px-0 col-sm-10 col-md-6 col-lg-5 col-xl-4">
-        <div className="card-header">
-          <h1 className="card-title"> Signup </h1>
-        </div>
-        <form onSubmit={Form_submited}>
-          <div className="card-body">
-            <div className="form-group">
-              <label htmlFor="inputEmail">Email address</label>
-              <input
-                type="email"
-                className={`form-control ${
-                  Emailischanged
-                    ? Email_Isinvalid
-                      ? "is-invalid"
-                      : "is-valid"
-                    : ""
-                }`}
-                id="inputEmail"
-                placeholder="Enter email"
-                value={Email_inputvalue}
-                onChange={Email_change}
-              />
-              <small id="emailHelp" className="form-text text-muted">
-                Please enter your username
-              </small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="inputPassword"> Password </label>
-              <input
-                type="Password"
-                className={`form-control 
+    <>
+      <div className="bg-Todo row mx-0 d-flex justify-content-center align-items-center min-vh-100">
+        {Iserr ? <Alerter text={errtext} /> : null}
+        <div className="card col-12 px-0 col-sm-10 col-md-6 col-lg-5 col-xl-4">
+          <div className="card-header">
+            <h1 className="card-title"> Signup </h1>
+          </div>
+          <form onSubmit={Form_submited}>
+            <div className="card-body">
+              <div className="form-group">
+                <label htmlFor="inputEmail">Email address</label>
+                <input
+                  type="email"
+                  className={`form-control ${
+                    Emailischanged
+                      ? Email_Isinvalid
+                        ? "is-invalid"
+                        : "is-valid"
+                      : ""
+                  }`}
+                  id="inputEmail"
+                  placeholder="Enter email"
+                  value={Email_inputvalue}
+                  onChange={Email_change}
+                />
+                <small id="emailHelp" className="form-text text-muted">
+                  Please enter your username
+                </small>
+              </div>
+              <div className="form-group">
+                <label htmlFor="inputPassword"> Password </label>
+                <input
+                  type="Password"
+                  className={`form-control 
                 ${
                   Passwordchanged
                     ? Password_Isinvalid
@@ -199,33 +211,34 @@ function Signup() {
                       : "is-valid"
                     : ""
                 }`}
-                id="inputPassword"
-                placeholder="Enter Password"
-                value={Password_inputvalue}
-                onChange={Password_change}
-              />
-              <small id="emailHelp" className="form-text text-muted">
-                Please enter Password
-              </small>
+                  id="inputPassword"
+                  placeholder="Enter Password"
+                  value={Password_inputvalue}
+                  onChange={Password_change}
+                />
+                <small id="emailHelp" className="form-text text-muted">
+                  Please enter Password
+                </small>
+              </div>
             </div>
-          </div>
-          <div className="card-footer row mx-0 ">
-            <button
-              className="btn-block card-link btn btn-success"
-              type="submit"
-            >
-              Signup
-            </button>
-            <Link
-              to="/Login"
-              className="card-link col-12 mx-0  mt-4 text-center "
-            >
-              i have accont | Login
-            </Link>
-          </div>
-        </form>
+            <div className="card-footer row mx-0 ">
+              <button
+                className="btn-block card-link btn btn-success"
+                type="submit"
+              >
+                Signup
+              </button>
+              <Link
+                to="/Login"
+                className="card-link col-12 mx-0  mt-4 text-center "
+              >
+                i have accont | Login
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 export default Signup;

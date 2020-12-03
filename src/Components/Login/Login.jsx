@@ -13,9 +13,13 @@ import LoginContext from "../../Contexts/LoginContext/LoginContext";
 const Alerter = loadable(() => {
   return import("../Alerter/Alerter");
 });
+const Loader = loadable(() => {
+  return import("./../Loader/Loader");
+});
 
 function Login() {
   let [state, setState] = useState({
+    Inloading : false,
     Email_inputvalue: "",
     Password_inputvalue: "",
     Email_Isinvalid: false,
@@ -87,10 +91,14 @@ function Login() {
     }
     let gmailhash = sha256(Email_inputvalue.trim()).toString().trim();
     let passwordhash = sha256(Password_inputvalue.trim()).toString().trim();
-
+setState({
+  ...state,
+  Inloading: true
+})
     axios
       .get(`/users/${gmailhash}/.json`)
       .then((DB) => {
+        
         if (DB.data[Object.keys(DB.data)].gmail === gmailhash) {
           if (DB.data[Object.keys(DB.data)].password === passwordhash) {
             setState({
@@ -158,8 +166,11 @@ function Login() {
     Password_Isinvalid,
     Passwordchanged,
     Emailischanged,
+    Inloading,
   } = state;
-
+  if (Inloading) {
+    return <Loader />;
+  }
   return (
     <div className="bg-Todo row mx-0 d-flex justify-content-center align-items-center min-vh-100">
       {Iserr ? <Alerter text={errtext} /> : null}
