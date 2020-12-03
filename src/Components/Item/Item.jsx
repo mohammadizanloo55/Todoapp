@@ -147,7 +147,7 @@ function Item(props) {
           ) : (
             <p className="m-0 ml-2"> {Itemtext} </p>
           )}
-          <div className="row ml-2 px-md-4 px-0">
+          <div className="row mr-1 px-md-4 px-0">
             {!IseditedClick ? (
               <div className="col px-0">
                 <button

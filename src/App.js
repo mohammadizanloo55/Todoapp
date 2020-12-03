@@ -1,24 +1,35 @@
+//? scss file
 import "./App.scss";
-//? librarys
-import {
-  Route,
-  Redirect,
-  Switch,
-  BrowserRouter as Router,
-} from "react-router-dom";
-//? Components
-import Header from "./Components/Header/Header";
-import Helper from "./Components/Helper/Helper";
-import LIST_WORK from "./Components/List_work/List-work";
-import Login from "./Components/Login/Login";
-import Signup from "./Components/Signup/Signup";
 //? hook
 import { useReducer } from "react";
+
+//? librarys
+import { Route, Redirect, BrowserRouter as Router } from "react-router-dom";
+import loadable from "@loadable/component";
+
 //? Context and Reducer
 import TodoReducer from "./Reducers/TodoReducer/TodoReducer";
 import LoginReducer from "./Reducers/LoginReducer/LoginReducer";
 import TodoContext from "./Contexts/TodoContext/TodoContext";
 import LoginContext from "./Contexts/LoginContext/LoginContext";
+
+//? Components
+const Header = loadable(() => {
+  return import("./Components/Header/Header");
+});
+const Helper = loadable(() => {
+  return import("./Components/Helper/Helper");
+});
+const LIST_WORK = loadable(() => {
+  return import("./Components/List_work/List-work");
+});
+const Login = loadable(() => {
+  return import("./Components/Login/Login");
+});
+const Signup = loadable(() => {
+  return import("./Components/Signup/Signup");
+});
+
 function App() {
   const [Todostate, Tododispatch] = useReducer(TodoReducer, {
     Todos: [],
