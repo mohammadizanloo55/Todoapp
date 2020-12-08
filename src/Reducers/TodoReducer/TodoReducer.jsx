@@ -18,6 +18,7 @@ function TodoReducer(state, action) {
     case "deleteTodo": {
       return deleteTodo(state, action);
     }
+
     default: {
       throw Error("your type is invalid");
     }

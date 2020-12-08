@@ -9,6 +9,9 @@ function LoginReducer(state, action) {
     case "logout": {
       return logout(state, action);
     }
+    case "tooglesetting": {
+      return tooglesetting(state);
+    }
     default: {
       throw Error("your type is invalid");
     }
@@ -24,23 +27,29 @@ let Login_Submit = (state, action) => {
   };
 };
 let Signup_Submit = (state, action) => {
-  let { email, Password , firebasehash } = action.payload;
+  let { email, Password, firebasehash } = action.payload;
 
   return {
     ...state,
     User_is_ok: true,
     email,
     Password,
-    firebasehash
+    firebasehash,
   };
 };
-let logout = (state, action) => {
+let logout = (state) => {
   return {
+    ...state,
     User_is_ok: false,
     Password: null,
     email: null,
-    firebasehash:""
-    
+    firebasehash: "",
+  };
+};
+let tooglesetting = (state) => {
+  return {
+    ...state,
+    settingShow: !state.settingShow,
   };
 };
 export default LoginReducer;

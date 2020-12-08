@@ -1,15 +1,3 @@
-.nav-item {
-  cursor: pointer;
-}
-
-::selection {
-  cursor: pointer;
-  background-color: white;
-  color: none;
-}
-z-index-last {
-  z-index: 2000;
-}
 .bg-Todo {
   background-image: url("./Images/Login_Signup.jpg");
   background-size: cover;

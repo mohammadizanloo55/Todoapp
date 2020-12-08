@@ -19,7 +19,7 @@ const Loader = loadable(() => {
 
 function Login() {
   let [state, setState] = useState({
-    Inloading : false,
+    Inloading: false,
     Email_inputvalue: "",
     Password_inputvalue: "",
     Email_Isinvalid: false,
@@ -91,14 +91,13 @@ function Login() {
     }
     let gmailhash = sha256(Email_inputvalue.trim()).toString().trim();
     let passwordhash = sha256(Password_inputvalue.trim()).toString().trim();
-setState({
-  ...state,
-  Inloading: true
-})
+    setState({
+      ...state,
+      Inloading: true,
+    });
     axios
       .get(`/users/${gmailhash}/.json`)
       .then((DB) => {
-        
         if (DB.data[Object.keys(DB.data)].gmail === gmailhash) {
           if (DB.data[Object.keys(DB.data)].password === passwordhash) {
             setState({
@@ -112,6 +111,7 @@ setState({
               DB.data[Object.keys(DB.data)].Todos === undefined
                 ? []
                 : DB.data[Object.keys(DB.data)];
+
             loginContext.Tododispatch({
               type: "updateTodo",
               payload: {
@@ -119,6 +119,9 @@ setState({
               },
             });
 
+            localStorage.email = gmailhash;
+            localStorage.Password = passwordhash;
+            localStorage.firebasehash = Object.keys(DB.data)[0];
             loginContext.Logindispatch({
               type: "Signup_Submit",
               payload: {

@@ -12,7 +12,7 @@ const Alerter = loadable(() => {
 });
 function Helper() {
   const Todocontext = useContext(TodoContext);
-  // const logincontext = useContext(LoginContext);
+
   const [state, setstate] = useState({
     IsErr: false,
     Errtext: "",
@@ -37,7 +37,7 @@ function Helper() {
         Errtext: "please insert valid value in input",
       });
     } else {
-      let { email, Password, firebasehash } = Todocontext;
+      let { email, Password, firebasehash, themeisdark } = Todocontext;
 
       axios
         .put(`/users/${email}/${firebasehash}.json`, {
@@ -45,7 +45,7 @@ function Helper() {
           password: Password,
           Todos: newTodos,
         })
-        .then((e) => {
+        .then(() => {
           setstate({
             inputvalue: "",
             IsErr: false,

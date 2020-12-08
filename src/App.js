@@ -29,7 +29,9 @@ const Login = loadable(() => {
 const Signup = loadable(() => {
   return import("./Components/Signup/Signup");
 });
-
+const Setting = loadable(() => {
+  return import("./Components/Setting/Setting");
+});
 function App() {
   const [Todostate, Tododispatch] = useReducer(TodoReducer, {
     Todos: [],
@@ -38,12 +40,14 @@ function App() {
   const [Loginstate, Logindispatch] = useReducer(LoginReducer, {
     User_is_ok: false,
     email: null,
+    themeisdark: false,
     Password: null,
     firebasehash: "",
+    settingShow: false,
   });
 
-  let { User_is_ok } = Loginstate;
-
+  let { User_is_ok, settingShow } = Loginstate;
+  
   return (
     <>
       <Router>
@@ -62,6 +66,7 @@ function App() {
             <Header />
             <Helper />
             <LIST_WORK />
+            {settingShow ? <Setting /> : null}
           </TodoContext.Provider>
         </Route>
         <Route path="/Login">

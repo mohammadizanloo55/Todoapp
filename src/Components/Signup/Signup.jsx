@@ -5,7 +5,7 @@ import sha256 from "crypto-js/sha256";
 import loadable from "@loadable/component";
 
 //? hooks
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 //?Contexts
 import LoginContext from "../../Contexts/LoginContext/LoginContext";
@@ -20,6 +20,7 @@ const Loader = loadable(() => {
 
 function Signup() {
   let [state, setState] = useState({
+    localStoragedataisvalid: false,
     Email_inputvalue: "",
     Password_inputvalue: "",
     Email_Isinvalid: false,
@@ -34,6 +35,45 @@ function Signup() {
   let loginContext = useContext(LoginContext);
   let EmailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   let GreatpasswordRegex = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
+  useEffect(() => {
+    if (localStorage.email === "null" || localStorage.email === undefined) {
+      return null;
+    } else {
+      let { firebasehash, email, Password } = localStorage;
+
+      axios.get(`/users/${email}/${firebasehash}/.json`).then((DB) => {
+        if (DB.data === null) {
+          setState({
+            ...state,
+          });
+          return;
+        }
+        if (email === DB.data.gmail) {
+          setState({
+            ...state,
+            localStoragedataisvalid: true,
+            Iserr: false,
+            errtext: "",
+            Inloading: false,
+            Email_inputvalue: "",
+            Password_inputvalue: "",
+          });
+          console.log(DB.data);
+          let newTodos = DB.data.Todos === undefined ? [] : DB.data.Todos;
+
+          loginContext.Tododispatch({
+            type: "updateTodo",
+            payload: {
+              newTodos,
+              email: DB.data.gmail,
+              Password: DB.data.password,
+              firebasehash,
+            },
+          });
+        }
+      });
+    }
+  }, []);
 
   let Email_change = (e) => {
     if (EmailRegex.test(e.target.value)) {
@@ -92,10 +132,10 @@ function Signup() {
       });
       return null;
     }
-    
+
     let gmailhash = sha256(Email_inputvalue.trim()).toString().trim();
     let passwordhash = sha256(Password_inputvalue.trim()).toString().trim();
-   
+
     axios
       .get(`/users/${gmailhash}/.json`)
       .then((DB) => {
@@ -118,6 +158,10 @@ function Signup() {
                 Email_inputvalue: "",
                 Password_inputvalue: "",
               });
+              localStorage.email = gmailhash;
+              localStorage.Password = passwordhash;
+              localStorage.firebasehash = e.data.name;
+
               loginContext.Logindispatch({
                 type: "Signup_Submit",
                 payload: {
@@ -164,16 +208,24 @@ function Signup() {
     Password_Isinvalid,
     Passwordchanged,
     Emailischanged,
+    localStoragedataisvalid,
     Inloading,
   } = state;
   if (Inloading) {
     return <Loader />;
   }
+  if (localStoragedataisvalid) {
+    return (
+      <>
+        <Redirect to="/home" />
+      </>
+    );
+  }
   return (
     <>
       <div className="bg-Todo row mx-0 d-flex justify-content-center align-items-center min-vh-100">
         {Iserr ? <Alerter text={errtext} /> : null}
-        <div className="card col-12 px-0 col-sm-10 col-md-6 col-lg-5 col-xl-4">
+        <div className="card  col-12 px-0 col-sm-10 col-md-6 col-lg-5 col-xl-4">
           <div className="card-header">
             <h1 className="card-title"> Signup </h1>
           </div>
