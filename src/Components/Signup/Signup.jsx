@@ -39,7 +39,7 @@ function Signup() {
     if (localStorage.email === "null" || localStorage.email === undefined) {
       return null;
     } else {
-      let { firebasehash, email, Password } = localStorage;
+      let { firebasehash, email } = localStorage;
 
       axios.get(`/users/${email}/${firebasehash}/.json`).then((DB) => {
         if (DB.data === null) {
@@ -51,6 +51,9 @@ function Signup() {
         if (email === DB.data.gmail) {
           setState({
             ...state,
+            email: DB.data.gmail,
+            Password: DB.data.password,
+            firebasehash,
             localStoragedataisvalid: true,
             Iserr: false,
             errtext: "",
@@ -58,13 +61,18 @@ function Signup() {
             Email_inputvalue: "",
             Password_inputvalue: "",
           });
-          console.log(DB.data);
-          let newTodos = DB.data.Todos === undefined ? [] : DB.data.Todos;
-
+          let newTodos = DB.data.Todos === undefined ? [] : DB.data;
+          console.log(DB.data.Todos);
           loginContext.Tododispatch({
             type: "updateTodo",
             payload: {
               newTodos,
+            },
+          });
+
+          loginContext.Logindispatch({
+            type: "Signup_Submit",
+            payload: {
               email: DB.data.gmail,
               Password: DB.data.password,
               firebasehash,

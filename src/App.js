@@ -1,9 +1,9 @@
-//? scss file
+//? Import Scss Files
 import "./App.scss";
 //? hook
 import { useReducer } from "react";
 
-//? librarys
+//? Librarys
 import { Route, Redirect, BrowserRouter as Router } from "react-router-dom";
 import loadable from "@loadable/component";
 

@@ -51,8 +51,8 @@ let updateTodo = (state, action) => {
     newTodos.Todos === undefined || newTodos.Todos === null
       ? []
       : newTodos.Todos;
+  
   return {
-    ...state,
     Todos,
   };
 };

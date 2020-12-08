@@ -2,27 +2,37 @@ import "./Setting.scss";
 import TodoContext from "./../../Contexts/TodoContext/TodoContext";
 import { useContext } from "react";
 import axios from "./../../AxiosConfig/AxiosConfig";
+
 function Setting() {
   let todocontext = useContext(TodoContext);
   let settingtoggler = () => {
     todocontext.Logindispatch({ type: "tooglesetting" });
   };
   let themetoogle = () => {
-    let { Todo, email, firebasehash, Password } = todocontext;
     // Storage
   };
   let deleteaccount = () => {
     console.log(todocontext);
     let { email } = todocontext;
-    axios.delete(`/users/${email}.json`).then((data) => {
-      todocontext.Logindispatch({ type: "tooglesetting" });
-      todocontext.Tododispatch({ type: "clean_Todo" });
-      todocontext.Logindispatch({ type: "logout" });
-      localStorage.email = undefined;
-      
-    }).catch(err=>{
-      alert(err)
-    })
+    axios
+      .delete(`/users/${email}.json`)
+      .then((data) => {
+        todocontext.Logindispatch({ type: "tooglesetting" });
+        todocontext.Tododispatch({ type: "clean_Todo" });
+        todocontext.Logindispatch({ type: "logout" });
+        localStorage.email = undefined;
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+  let passwordchanger = () => {
+    
+    let { Todo, email, firebasehash, Password } = todocontext;
+    console.log(email);
+    axios.get(`/users/${email}/${firebasehash}/password.json`).then((data) => {
+      console.log(data);
+    });
   };
   return (
     <div className="row m-0 px-0 Setting d-flex align-items-center justify-content-center  position-absolute bg-blur h-100 w-100">
@@ -30,7 +40,10 @@ function Setting() {
         <div className="card-header  d-flex  justify-content-between">
           <h1 className="mb-0 text-center card-title w-100 "> Setting </h1>
 
-          <button onClick={settingtoggler} className="bg-white border-0 h1 p-0 text-right m-0">
+          <button
+            onClick={settingtoggler}
+            className="bg-white border-0 h1 p-0 text-right m-0"
+          >
             &times;
           </button>
         </div>
@@ -42,10 +55,15 @@ function Setting() {
             </button>
           </div>
           <div className="mb-3 d-flex flex-row align-items-center">
+            <p className="m-0 mx-3"> change password : </p>
+            <button onClick={passwordchanger} className="btn  btn-danger p-0">
+              change password
+            </button>
+          </div>
+          <div className="mb-3 d-flex flex-row align-items-center">
             <p className="m-0 mx-3"> delete account </p>
             <button onClick={deleteaccount} className="btn btn-danger">
-              {" "}
-              delete account{" "}
+              delete account
             </button>
           </div>
         </div>
