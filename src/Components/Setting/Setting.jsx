@@ -24,7 +24,6 @@ function Setting() {
     // Storage
   };
   let deleteaccount = () => {
-    console.log(todocontext);
     let { email } = todocontext;
     axios
       .delete(`/users/${email}.json`)
@@ -78,9 +77,9 @@ function Setting() {
       return;
     }
     let { Todos, email, firebasehash, Password } = todocontext;
-    let newPassword  = sha256(state.changepasswordinput).toString()
-    if(Password === newPassword) {
-      return ;
+    let newPassword = sha256(state.changepasswordinput).toString();
+    if (Password === newPassword) {
+      return;
     }
     axios
       .put(`/users/${email}/${firebasehash}.json`, {
@@ -96,7 +95,7 @@ function Setting() {
           isErr: false,
           Errtext: "",
         });
-        cancelpasswordchage()
+        cancelpasswordchage();
       });
   };
   let cancelpasswordchage = () => {

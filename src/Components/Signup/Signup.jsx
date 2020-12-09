@@ -40,7 +40,10 @@ function Signup() {
       return null;
     } else {
       let { firebasehash, email } = localStorage;
-
+      setState({
+        ...state ,
+        Inloading: true ,
+      })
       axios.get(`/users/${email}/${firebasehash}/.json`).then((DB) => {
         if (DB.data === null) {
           setState({
@@ -62,6 +65,7 @@ function Signup() {
             Password_inputvalue: "",
           });
           let newTodos = DB.data.Todos === undefined ? [] : DB.data;
+          
           console.log(DB.data.Todos);
           loginContext.Tododispatch({
             type: "updateTodo",
@@ -220,7 +224,7 @@ function Signup() {
     localStoragedataisvalid,
     Inloading,
   } = state;
-  if (Inloading) {
+  if (Inloading  && localStorage.email !== "undefined") {
     return <Loader />;
   }
   if (localStoragedataisvalid) {
