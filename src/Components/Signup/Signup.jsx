@@ -136,7 +136,8 @@ function Signup() {
       setState({
         ...state,
         Iserr: true,
-        errtext: "your password is not safe",
+        errtext: `your password is not safe 
+          Your password must be (# $) and it must contain uppercase and lowercase numbers and letters And be more than 8 letters`,
       });
       return null;
     }
