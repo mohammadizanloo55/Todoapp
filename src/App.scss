@@ -3,4 +3,40 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  
+}
+.nav-link:hover {
+  cursor: pointer;
+}
+.dark   {
+  min-height: 100vh;
+  color: white !important;
+  background: #121212;
+}
+.dark .bg-light {
+  border: 1px solid darkslategray !important;
+  background-color:  #414040!important;
+}
+.dark .nav-link{
+  border: none !important;
+}
+.dark .text-muted {
+  color: white !important;
+} 
+.dark .jumbotron {
+  background-color: #414040;
+}
+.dark .nav-tabs{
+  border: none !important ;
+}
+.dark .active {
+   background-color: #414040 !important ;
+   color: white !important;
+   border: none !important;
+}
+.dark .btn-success {
+  background-color: #155c26 !important;
+}
+.dark .card {
+  background-color: #121212;
 }

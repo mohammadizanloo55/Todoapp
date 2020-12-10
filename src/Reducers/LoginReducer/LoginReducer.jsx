@@ -12,6 +12,9 @@ function LoginReducer(state, action) {
     case "tooglesetting": {
       return tooglesetting(state);
     }
+    case "toogletheme": {
+      return toogletheme(state);
+    }
     default: {
       throw Error("your type is invalid");
     }
@@ -50,6 +53,13 @@ let tooglesetting = (state) => {
   return {
     ...state,
     settingShow: !state.settingShow,
+  };
+};
+let toogletheme = (state) => {
+  console.log(state);
+  return {
+    ...state,
+    themeDark: !state.themeDark,
   };
 };
 export default LoginReducer;

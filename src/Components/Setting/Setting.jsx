@@ -13,6 +13,7 @@ function Setting() {
     changepasswordinput: "",
     isErr: false,
     Errtext: "",
+    inputisedited: false,
   });
   let GreatpasswordRegex = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
 
@@ -21,7 +22,8 @@ function Setting() {
     todocontext.Logindispatch({ type: "tooglesetting" });
   };
   let themetoogle = () => {
-    // Storage
+    localStorage.darkmodeTodo = !todocontext.themeDark;
+    todocontext.Logindispatch({ type: "toogletheme" });
   };
   let deleteaccount = () => {
     let { email } = todocontext;
@@ -49,7 +51,7 @@ function Setting() {
         ...state,
         isErr: true,
         changepasswordinput: e.target.value,
-
+        inputisedited: true,
         Errtext: `your password is not safe 
         Your password must be (# $) and it must contain uppercase and lowercase numbers and letters And be more than 8 letters`,
       });
@@ -57,6 +59,7 @@ function Setting() {
     }
     setState({
       ...state,
+      inputisedited: true,
       changepasswordinput: e.target.value,
       isErr: false,
       Errtext: "",
@@ -104,7 +107,6 @@ function Setting() {
       changepasswordinput: "",
     });
   };
-
   return (
     <div className="row m-0 px-0 Setting d-flex align-items-center justify-content-center  position-absolute bg-blur h-100 w-100">
       {state.isErr ? <Alerter text={state.Errtext} /> : null}
@@ -121,13 +123,20 @@ function Setting() {
         </div>
         <div className="card-body d-flex flex-column  px-0 pl-2">
           {state.showform ? (
-            <form className="mx-2" onSubmit={passwordchangersubmit}>
+            <form className="mx-2 " onSubmit={passwordchangersubmit}>
               <input
                 placeholder="Please enter your password"
                 onChange={inputchanged}
                 type="Password"
                 value={state.changepasswordinput}
-                className="form-control"
+                className={`form-control
+               ${
+                 state.inputisedited
+                   ? state.isErr
+                     ? "is-invalid"
+                     : "is-valid"
+                   : ""
+               }`}
               />
 
               <div className="d-flex justify-content-center">
@@ -148,14 +157,14 @@ function Setting() {
               <div className="mb-3 d-flex  align-items-center">
                 <p className="m-0 mx-3"> color theme : </p>
                 <button className="btn btn-dark" onClick={themetoogle}>
-                  dark theme
+                  change theme
                 </button>
               </div>
               <div className="mb-3 d-flex flex-row align-items-center">
                 <p className="m-0 mx-3"> change password : </p>
                 <button
                   onClick={passwordchanger}
-                  className="btn  btn-danger px-0 px-sm-2"
+                  className="btn  btn-primary px-0 px-sm-2"
                 >
                   change password
                 </button>

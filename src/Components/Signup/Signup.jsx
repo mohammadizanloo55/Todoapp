@@ -33,6 +33,7 @@ function Signup() {
   });
 
   let loginContext = useContext(LoginContext);
+
   let EmailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   let GreatpasswordRegex = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
   useEffect(() => {
@@ -41,49 +42,59 @@ function Signup() {
     } else {
       let { firebasehash, email } = localStorage;
       setState({
-        ...state ,
-        Inloading: true ,
-      })
-      axios.get(`/users/${email}/${firebasehash}/.json`).then((DB) => {
-        if (DB.data === null) {
-          setState({
-            ...state,
-          });
-          return;
-        }
-        if (email === DB.data.gmail) {
-          setState({
-            ...state,
-            email: DB.data.gmail,
-            Password: DB.data.password,
-            firebasehash,
-            localStoragedataisvalid: true,
-            Iserr: false,
-            errtext: "",
-            Inloading: false,
-            Email_inputvalue: "",
-            Password_inputvalue: "",
-          });
-          let newTodos = DB.data.Todos === undefined ? [] : DB.data;
-          
-          console.log(DB.data.Todos);
-          loginContext.Tododispatch({
-            type: "updateTodo",
-            payload: {
-              newTodos,
-            },
-          });
-
-          loginContext.Logindispatch({
-            type: "Signup_Submit",
-            payload: {
+        ...state,
+        Inloading: true,
+      });
+      axios
+        .get(`/users/${email}/${firebasehash}/.json`)
+        .then((DB) => {
+          if (DB.data === null) {
+            setState({
+              ...state,
+            });
+            return;
+          }
+          if (email === DB.data.gmail) {
+            setState({
+              ...state,
               email: DB.data.gmail,
               Password: DB.data.password,
               firebasehash,
-            },
+              localStoragedataisvalid: true,
+              Iserr: false,
+              errtext: "",
+              Inloading: false,
+              Email_inputvalue: "",
+              Password_inputvalue: "",
+            });
+            let newTodos = DB.data.Todos === undefined ? [] : DB.data;
+
+            console.log(DB.data.Todos);
+            loginContext.Tododispatch({
+              type: "updateTodo",
+              payload: {
+                newTodos,
+              },
+            });
+
+            loginContext.Logindispatch({
+              type: "Signup_Submit",
+              payload: {
+                email: DB.data.gmail,
+                Password: DB.data.password,
+                firebasehash,
+              },
+            });
+          }
+        })
+        .catch((err) => {
+          setState({
+            ...state,
+            Iserr: true,
+            errtext: `err : ${err} `,
+            Inloading: false,
           });
-        }
-      });
+        });
     }
   }, []);
 
@@ -224,7 +235,8 @@ function Signup() {
     localStoragedataisvalid,
     Inloading,
   } = state;
-  if (Inloading  && localStorage.email !== "undefined") {
+
+  if (Inloading && localStorage.email !== "undefined") {
     return <Loader />;
   }
   if (localStoragedataisvalid) {

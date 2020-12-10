@@ -1,5 +1,7 @@
 //? Import Scss Files
+
 import "./App.scss";
+
 //? hook
 import { useReducer } from "react";
 
@@ -32,6 +34,7 @@ const Signup = loadable(() => {
 const Setting = loadable(() => {
   return import("./Components/Setting/Setting");
 });
+
 function App() {
   const [Todostate, Tododispatch] = useReducer(TodoReducer, {
     Todos: [],
@@ -40,16 +43,16 @@ function App() {
   const [Loginstate, Logindispatch] = useReducer(LoginReducer, {
     User_is_ok: false,
     email: null,
-    themeisdark: false,
+    themeDark: localStorage.darkmodeTodo ==="true" ? true : false ,
     Password: null,
     firebasehash: "",
     settingShow: false,
   });
 
-  let { User_is_ok, settingShow } = Loginstate;
+  let { User_is_ok, settingShow , themeDark } = Loginstate;
   
   return (
-    <>
+    <div className={`${themeDark? "dark": "" }`}>
       <Router>
         <Route path="/">
           <Redirect exact to={`${User_is_ok ? "/home" : "/Signup"}`} />
@@ -92,7 +95,7 @@ function App() {
           </LoginContext.Provider>
         </Route>
       </Router>
-    </>
+    </div>
   );
 }
 
