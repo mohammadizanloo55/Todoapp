@@ -1,18 +1,16 @@
-import { useContext, useState } from "react";
-import loadable from "@loadable/component";
+import { useContext } from "react";
+import { Firebase_Signout } from "./../../firebase/firebase";
 import TodoContext from "./../../Contexts/TodoContext/TodoContext";
 import gear from "./gear.svg";
-import "./Header.scss";
-import { Redirect } from "react-router-dom";
-const Setting = loadable(() => {
-  return import("./../Setting/Setting");
-});
 function Header() {
   let todocontext = useContext(TodoContext);
   let logout = () => {
-    todocontext.Tododispatch({ type: "clean_Todo" });
-    todocontext.Logindispatch({ type: "logout" });
-    localStorage.email = undefined;
+    Firebase_Signout().then(() => {
+      todocontext.Tododispatch({ type: "clean_Todo" });
+      todocontext.Logindispatch({ type: "logout" });
+    }).catch(err=>{
+      console.error(err)
+    });
   };
   let settingtoggler = () => {
     todocontext.Logindispatch({ type: "tooglesetting" });

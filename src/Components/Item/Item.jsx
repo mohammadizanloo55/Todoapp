@@ -1,5 +1,6 @@
+import { Firebase_update_data , Firebase_Delete_data } from "./../../firebase/firebase";
 //? library
-import axios from "./../../AxiosConfig/AxiosConfig";
+
 //? hooks
 import { useContext, useState } from "react";
 //? Context
@@ -21,17 +22,12 @@ function Item(props) {
   let { firebasehash, email } = todocontext;
   let itemindexofall = todocontext.Todos.indexOf(item);
   let { IseditedClick, editedinputvalue, Isvalidinput } = state;
-  let Itemtext = item.text;
 
-  let donetoogleClicked = () => {
-    axios
-      .put(
-        `/users/${email}/${firebasehash}/Todos/${itemindexofall}/.json`,
-        {
-          ...item,
-          IsDone: !item.IsDone,
-        }
-      )
+  const { uid } = todocontext.User;
+  const donetoogleClicked = () => {
+    Firebase_update_data(uid, item, itemindexofall, {
+      IsDone: !item.IsDone,
+    })
       .then(() => {
         item.IsDone = !item.IsDone;
         todocontext.Tododispatch({
@@ -39,10 +35,11 @@ function Item(props) {
         });
       })
       .catch((err) => {
+        console.error(err);
         throw new Error(err);
       });
   };
-  let editClicked = () => {
+  const editClicked = () => {
     setState({
       ...state,
       IseditedClick: true,
@@ -76,29 +73,23 @@ function Item(props) {
       });
       return;
     }
-    axios
-      .put(
-        `/users/${email}/${firebasehash}/Todos/${itemindexofall}/.json`,
-        {
-          ...item,
-          text: editedinputvalue,
-        }
-      )
-      .then(() => {
-        item.text = editedinputvalue;
+    Firebase_update_data(uid, item, itemindexofall, {
+      text: editedinputvalue,
+    }).then(() => {
+      item.text = editedinputvalue;
 
-        setState({
-          ...state,
-          IseditedClick: false,
-          editedinputvalue: "",
-        });
-        todocontext.Tododispatch({
-          type: "changeTodo",
-        });
-      })
-      .catch((err) => {
-        throw new Error(err);
+      setState({
+        ...state,
+        IseditedClick: false,
+        editedinputvalue: "",
       });
+      todocontext.Tododispatch({
+        type: "changeTodo",
+      });
+    }).catch(err=> {
+      throw new Error(err);
+    })
+    
   };
   let CancelEdit = () => {
     setState({
@@ -116,15 +107,13 @@ function Item(props) {
       }
       return false;
     });
-    axios
-      .put(
-        `/users/${email}/${firebasehash}/Todos/.json`,
-        {
-          ...todosfiltered,
-        }
-      )
+    
+    Firebase_Delete_data(uid,todosfiltered)
       .then(() => {
         todocontext.Tododispatch({ type: "deleteTodo" });
+      })
+      .catch((err) => {
+        throw new Error(err);
       });
   };
   return (
@@ -145,7 +134,7 @@ function Item(props) {
               </div>
             </div>
           ) : (
-            <p className="m-0 ml-2"> {Itemtext} </p>
+            <p className="m-0 ml-2"> {item.text} </p>
           )}
           <div className="row mr-1 px-md-4 px-0">
             {!IseditedClick ? (

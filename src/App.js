@@ -25,12 +25,10 @@ const Helper = loadable(() => {
 const LIST_WORK = loadable(() => {
   return import("./Components/List_work/List-work");
 });
-const Login = loadable(() => {
-  return import("./Components/Login/Login");
+const Login_Signup = loadable(() => {
+  return import("./Components/Login_Signup/index");
 });
-const Signup = loadable(() => {
-  return import("./Components/Signup/Signup");
-});
+
 const Setting = loadable(() => {
   return import("./Components/Setting/Setting");
 });
@@ -42,17 +40,16 @@ function App() {
 
   const [Loginstate, Logindispatch] = useReducer(LoginReducer, {
     User_is_ok: false,
-    email: null,
-    themeDark: localStorage.darkmodeTodo ==="true" ? true : false ,
-    Password: null,
-    firebasehash: "",
+    themeDark: localStorage.darkmodeTodo === "true" ? true : false,
     settingShow: false,
+    User : null ,
+    Islogout : false,
   });
 
-  let { User_is_ok, settingShow , themeDark } = Loginstate;
-  
+  let { User_is_ok, settingShow, themeDark } = Loginstate;
+
   return (
-    <div className={`${themeDark? "dark": "" }`}>
+    <div className={`${themeDark ? "dark" : ""}`}>
       <Router>
         <Route path="/">
           <Redirect exact to={`${User_is_ok ? "/home" : "/Signup"}`} />
@@ -80,7 +77,7 @@ function App() {
               Tododispatch,
             }}
           >
-            <Login />
+            <Login_Signup  status="Login"/>
           </LoginContext.Provider>
         </Route>
         <Route path="/Signup">
@@ -91,7 +88,7 @@ function App() {
               Tododispatch,
             }}
           >
-            <Signup />
+            <Login_Signup status="Signup"/>
           </LoginContext.Provider>
         </Route>
       </Router>

@@ -47,13 +47,9 @@ let clean_Todo = (state) => {
 };
 let updateTodo = (state, action) => {
   let { newTodos } = action.payload;
-  let Todos =
-    newTodos.Todos === undefined || newTodos.Todos === null
-      ? []
-      : newTodos.Todos;
   
   return {
-    Todos,
+    Todos : newTodos===null? [] : newTodos,
   };
 };
 let changeTodo = (state) => {

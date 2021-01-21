@@ -1,157 +1,127 @@
 import "./Setting.scss";
 import TodoContext from "./../../Contexts/TodoContext/TodoContext";
 import { useContext, useState } from "react";
-import axios from "./../../AxiosConfig/AxiosConfig";
-import sha256 from "crypto-js/sha256";
 import loadable from "@loadable/component";
+import Passwordcheck from "../Passwordcheck/Passwordcheck";
+import {
+  Firebase_Delete_Account,
+  Firebase_Reset_Password,
+} from "./../../firebase/firebase";
 const Alerter = loadable(() => {
   return import("./../Alerter/Alerter");
 });
+const FormPassword = loadable(() => {
+  return import("./FormPassword/FormPassword");
+});
+
 function Setting() {
   let [state, setState] = useState({
     showform: false,
     changepasswordinput: "",
-    isErr: false,
+    Iserr: false,
+    Password_Isinvalid: false,
     Errtext: "",
     inputisedited: false,
+    textinput: "",
+    Isfordeleteaccount: false,
   });
-  let GreatpasswordRegex = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
 
   let todocontext = useContext(TodoContext);
-  let settingtoggler = () => {
+  const settingtoggler = () => {
     todocontext.Logindispatch({ type: "tooglesetting" });
   };
-  let themetoogle = () => {
+  const themetoogle = () => {
     localStorage.darkmodeTodo = !todocontext.themeDark;
     todocontext.Logindispatch({ type: "toogletheme" });
   };
-  let deleteaccount = () => {
-    let { email } = todocontext;
-    axios
-      .delete(`/users/${email}.json`)
-      .then((data) => {
-        todocontext.Logindispatch({ type: "tooglesetting" });
-        todocontext.Tododispatch({ type: "clean_Todo" });
-        todocontext.Logindispatch({ type: "logout" });
-        localStorage.email = undefined;
-      })
-      .catch((err) => {
-        alert(err);
-      });
+  const deleteaccount = () => {
+    setState({
+      ...state,
+      textinput: "delete account",
+      Isfordeleteaccount: true,
+      showform: !state.showform,
+    });
   };
   let passwordchanger = () => {
     setState({
       ...state,
       showform: !state.showform,
+      textinput: "change password",
+      Isfordeleteaccount: false,
     });
   };
-  let inputchanged = (e) => {
-    if (!GreatpasswordRegex.test(e.target.value)) {
-      setState({
-        ...state,
-        isErr: true,
-        changepasswordinput: e.target.value,
-        inputisedited: true,
-        Errtext: `your password is not safe 
-        Your password must be (# $) and it must contain uppercase and lowercase numbers and letters And be more than 8 letters`,
-      });
-      return;
-    }
+
+  const passwordchangersubmit = (e) => {
+    e.preventDefault();
     setState({
       ...state,
-      inputisedited: true,
-      changepasswordinput: e.target.value,
-      isErr: false,
-      Errtext: "",
+      ...Passwordcheck(
+        state.changepasswordinput,
+        `your password is not safe 
+        Your password must be (# $) and it must contain uppercase and lowercase numbers and letters And be more than 8 letters`
+      ),
     });
-    console.log(e.target.value);
-  };
-  console.log(localStorage.Password);
-
-  let passwordchangersubmit = (e) => {
-    e.preventDefault();
-    if (!GreatpasswordRegex.test(state.changepasswordinput)) {
-      setState({
-        ...state,
-        isErr: true,
-        Errtext: `your password is not safe 
-        Your password must be (# $) and it must contain uppercase and lowercase numbers and letters And be more than 8 letters`,
-      });
-      return;
-    }
-    let { Todos, email, firebasehash, Password } = todocontext;
-    let newPassword = sha256(state.changepasswordinput).toString();
-    if (Password === newPassword) {
-      return;
-    }
-    axios
-      .put(`/users/${email}/${firebasehash}.json`, {
-        gmail: email,
-        Todos,
-        password: newPassword,
-      })
-      .then((data) => {
-        console.log(data);
-        localStorage.Password = newPassword;
+    let { Password_Isinvalid } = Passwordcheck(state.changepasswordinput);
+    if (!Password_Isinvalid) {
+      Firebase_Reset_Password(state.changepasswordinput).then(() => {
         setState({
           ...state,
-          isErr: false,
-          Errtext: "",
+          Iserr: true,
+          Errtext: " we send email for reset password ",
         });
-        cancelpasswordchage();
+        setTimeout(() => {
+          setState({
+            ...state,
+            Iserr: false,
+            Errtext: "",
+          });
+        }, 4000);
+      });
+    }
+  };
+  const deleteaccountsubmit = (e) => {
+    e.preventDefault();
+
+    Firebase_Delete_Account(state.changepasswordinput)
+      .then(() => {
+        todocontext.Logindispatch({ type: "tooglesetting" });
+        todocontext.Tododispatch({ type: "clean_Todo" });
+        todocontext.Logindispatch({ type: "logout" });
+      })
+      .catch((err) => {
+        setState({
+          ...state,
+          Iserr: true,
+          Errtext: err,
+        });
       });
   };
-  let cancelpasswordchage = () => {
-    setState({
-      showform: false,
-      changepasswordinput: "",
-    });
-  };
+
   return (
     <div className="row m-0 px-0 Setting d-flex align-items-center justify-content-center  position-absolute bg-blur h-100 w-100">
-      {state.isErr ? <Alerter text={state.Errtext} /> : null}
+      {state.Iserr ? <Alerter text={state.Errtext} /> : null}
       <div className="card col-12 px-0 col-sm-10 col-md-6 col-lg-5 col-xl-4 px-0">
         <div className="card-header  d-flex  justify-content-between">
           <h1 className="mb-0 text-center card-title w-100 "> Setting </h1>
 
           <button
             onClick={settingtoggler}
-            className="bg-white border-0 h1 p-0 text-right m-0"
+            className="btn btn-danger px-2  text-right m-0"
           >
             &times;
           </button>
         </div>
         <div className="card-body d-flex flex-column  px-0 pl-2">
           {state.showform ? (
-            <form className="mx-2 " onSubmit={passwordchangersubmit}>
-              <input
-                placeholder="Please enter your password"
-                onChange={inputchanged}
-                type="Password"
-                value={state.changepasswordinput}
-                className={`form-control
-               ${
-                 state.inputisedited
-                   ? state.isErr
-                     ? "is-invalid"
-                     : "is-valid"
-                   : ""
-               }`}
-              />
-
-              <div className="d-flex justify-content-center">
-                <button type="submit" className="mx-2 mt-4 btn btn-success">
-                  change my password
-                </button>
-                <button
-                  type="button"
-                  onClick={cancelpasswordchage}
-                  className="btn btn-danger  mt-4"
-                >
-                  cancell
-                </button>
-              </div>
-            </form>
+            <FormPassword
+              setState={setState}
+              state={state}
+              passwordsubmit={
+                state.Isfordeleteaccount
+                  ? deleteaccountsubmit
+                  : passwordchangersubmit
+              }
+            />
           ) : (
             <>
               <div className="mb-3 d-flex  align-items-center">

@@ -1,10 +1,12 @@
+import { Firebase_WriteTodos } from "./../../firebase/firebase";
 //? librarys
-import axios from "./../../AxiosConfig/AxiosConfig";
+
 import loadable from "@loadable/component";
 //? hooks
 import { useState, useContext } from "react";
 //? Context
 import TodoContext from "../../Contexts/TodoContext/TodoContext";
+
 //? Component
 
 const Alerter = loadable(() => {
@@ -19,7 +21,6 @@ function Helper() {
     inputvalue: "",
   });
   let { inputvalue } = state;
-
   let newTodos = Todocontext.Todos.concat([
     {
       text: inputvalue,
@@ -37,33 +38,29 @@ function Helper() {
         Errtext: "please insert valid value in input",
       });
     } else {
-      let { email, Password, firebasehash, themeisdark } = Todocontext;
-
-      axios
-        .put(`/users/${email}/${firebasehash}.json`, {
-          gmail: email,
-          password: Password,
-          Todos: newTodos,
-        })
-        .then(() => {
-          setstate({
-            inputvalue: "",
-            IsErr: false,
-          });
-          Todocontext.Tododispatch({
-            type: "formsubmited",
-            payload: {
-              newTodos,
-            },
-          });
-        })
-        .catch((err) => {
-          setstate({
-            inputvalue: "",
-            Errtext: `error for updata data ${err}`,
-            IsErr: true,
-          });
+      
+      Firebase_WriteTodos(Todocontext.User.uid, {
+        Todos: newTodos,
+      }).then(() => {
+        setstate({
+          inputvalue: "",
+          IsErr: false,
         });
+        Todocontext.Tododispatch({
+          type: "formsubmited",
+          payload: {
+            newTodos,
+          },
+        });
+      }).catch(err=>{
+        console.error(err)
+        setstate({
+          inputvalue: "",
+          Errtext: `error for updata data ${err}`,
+          IsErr: true,
+        });
+      })
+      
     }
   }
   function inputchanged(e) {
