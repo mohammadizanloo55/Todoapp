@@ -17,9 +17,11 @@
       <li>npm start</li>
     </ol>
   </li>
+  And enjoy :)
 </ol>
+
 <h3> Todos :  </h3>
 <ol>
 <li> Proof of not being a robot in Login Component and Signup   </li>
 </ol>
-And enjoy :)
+
