@@ -1,4 +1,7 @@
-import { Firebase_update_data , Firebase_Delete_data } from "./../../firebase/firebase";
+import {
+  Firebase_update_data,
+  Firebase_Delete_data,
+} from "./../../firebase/firebase";
 //? library
 
 //? hooks
@@ -19,7 +22,6 @@ function Item(props) {
     }
     return false;
   });
-  let { firebasehash, email } = todocontext;
   let itemindexofall = todocontext.Todos.indexOf(item);
   let { IseditedClick, editedinputvalue, Isvalidinput } = state;
 
@@ -75,21 +77,22 @@ function Item(props) {
     }
     Firebase_update_data(uid, item, itemindexofall, {
       text: editedinputvalue,
-    }).then(() => {
-      item.text = editedinputvalue;
-
-      setState({
-        ...state,
-        IseditedClick: false,
-        editedinputvalue: "",
-      });
-      todocontext.Tododispatch({
-        type: "changeTodo",
-      });
-    }).catch(err=> {
-      throw new Error(err);
     })
-    
+      .then(() => {
+        item.text = editedinputvalue;
+
+        setState({
+          ...state,
+          IseditedClick: false,
+          editedinputvalue: "",
+        });
+        todocontext.Tododispatch({
+          type: "changeTodo",
+        });
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
   };
   let CancelEdit = () => {
     setState({
@@ -107,8 +110,8 @@ function Item(props) {
       }
       return false;
     });
-    
-    Firebase_Delete_data(uid,todosfiltered)
+
+    Firebase_Delete_data(uid, todosfiltered)
       .then(() => {
         todocontext.Tododispatch({ type: "deleteTodo" });
       })
