@@ -16,6 +16,7 @@ import TodoContext from "./Contexts/TodoContext/TodoContext";
 import LoginContext from "./Contexts/LoginContext/LoginContext";
 
 //? Components
+import Confirm from "./Components/Confirm/Confirm"
 const Header = loadable(() => {
   return import("./Components/Header/Header");
 });
@@ -52,6 +53,12 @@ function App() {
     <div className={`${themeDark ? "dark" : ""}`}>
       <Router>
         <Route path="/">
+          {!localStorage.Confirmclosed ?
+            <Confirm 
+            persiantext={` لطفا اگر در ایران هستید فیلتر شکن خود را روشن کنید `}
+            englishtext = {`If you are in Iran, please turn on your VPN`}
+            /> : null
+          } 
           <Redirect exact to={`${User_is_ok ? "/home" : "/Signup"}`} />
         </Route>
         <Route path="/home">
